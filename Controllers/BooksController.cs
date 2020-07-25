@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BookList.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookList.Controllers
 {
@@ -36,8 +37,23 @@ namespace BookList.Controllers
                 await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(book);
 
+            return View(book);
+        }
+
+        //Details : Books/Details/:id
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var book = await _db.Books.SingleOrDefaultAsync(m => m.Id == id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            return View(book);
         }
 
         protected override void Dispose(bool disposing)
